@@ -8,6 +8,9 @@ public class SpawnEffect : MonoBehaviour {
     public float pause = 1;
     public AnimationCurve fadeIn;
 
+    public Material materialRespawn;
+    public Material materialFinal;
+
     ParticleSystem ps;
     float timer = 0;
     Renderer _renderer;
@@ -19,7 +22,7 @@ public class SpawnEffect : MonoBehaviour {
         shaderProperty = Shader.PropertyToID("_cutoff");
         _renderer = GetComponent<Renderer>();
         ps = GetComponentInChildren <ParticleSystem>();
-
+        _renderer.sharedMaterial = materialRespawn;
         var main = ps.main;
         main.duration = spawnEffectTime;
 
@@ -35,10 +38,12 @@ public class SpawnEffect : MonoBehaviour {
         }
         else
         {
-            ps.Play();
-            timer = 0;
+            //Fin de l'animation de Spawn
         }
-
+        if(!(timer < spawnEffectTime/4 + pause))
+        {
+            _renderer.sharedMaterial = materialFinal; //A partir de ce moment on peut rendre l'apparence basique du personnage
+        }
 
         _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate( Mathf.InverseLerp(0, spawnEffectTime, timer)));
         
